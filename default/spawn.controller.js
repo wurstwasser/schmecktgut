@@ -2,33 +2,42 @@ const roles = require('roles');
 
 const CONF = {
   MIN: {
-    harvester: 2,
+    harvester: 3,
     builder: 2,
     upgrader: 2,
   },
-  PRIORITY: ['harvester', 'builder', 'upgrader'],
+  PRIORITY: ['harvester', 'upgrader', 'builder'],
 };
 
 const spawn = {
   harvester: (roleCreeps) => {
     const count = roleCreeps.length;
     _.forEach(Game.spawns, (spawn, spawnName) => {
-      const newName = spawn.createCreep(roles.harvester.bodies.default, undefined, {role: 'harvester', spawn: spawnName});
-      console.log('spawning new harvester: ' + newName);
+      const body = roles.harvester.bodies.default;
+      if (spawn.canCreateCreep(body) === 0) {
+        const newName = spawn.createCreep(body, undefined, {role: 'harvester', spawn: spawnName});
+        console.log('spawning new harvester: ' + newName);
+      }
     });
   },
   builder: (roleCreeps) => {
     const count = roleCreeps.length;
     _.forEach(Game.spawns, (spawn) => {
-      const newName = spawn.createCreep(roles.builder.bodies.default, undefined, {role: 'builder'});
-      console.log('spawning new builder: ' + newName);
+      const body = roles.builder.bodies.default;
+      if (spawn.canCreateCreep(body) === 0) {
+        const newName = spawn.createCreep(body, undefined, {role: 'builder'});
+        console.log('spawning new builder: ' + newName);
+      }
     });
   },
   upgrader: (roleCreeps) => {
     const count = roleCreeps.length;
     _.forEach(Game.spawns, (spawn) => {
-      const newName = spawn.createCreep(roles.upgrader.bodies.default, undefined, {role: 'upgrader'});
-      console.log('spawning new upgrader: ' + newName);
+      const body = roles.upgrader.bodies.default;
+      if (spawn.canCreateCreep(body) === 0) {
+        const newName = spawn.createCreep(body, undefined, {role: 'upgrader'});
+        console.log('spawning new upgrader: ' + newName);
+      }
     });
   },
 }
@@ -37,7 +46,6 @@ module.exports = {
   run: () => {
     const creeps = _.groupBy(Game.creeps, (creep) => creep.memory.role);
     for (role of CONF.PRIORITY) {
-      console.log('role', role);
       const roleCreeps = creeps[role] || [];
       if (CONF.MIN[role] >= roleCreeps.length) {
         spawn[role](roleCreeps);
