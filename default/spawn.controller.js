@@ -40,7 +40,7 @@ module.exports = {
     const creeps = _.groupBy(Game.creeps, (creep) => creep.memory.role);
     for (role of CONF.PRIORITY) {
       const roleCreeps = creeps[role] || [];
-      if (CONF.MIN[role] >= roleCreeps.length) {
+      if (CONF.MIN[role] > roleCreeps.length) {
         spawn[role](roleCreeps);
         return;
       }
