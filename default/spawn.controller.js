@@ -1,13 +1,6 @@
 const roles = require('roles');
 
-const CONF = {
-  MIN: {
-    harvester: 3,
-    builder: 2,
-    upgrader: 3,
-  },
-  PRIORITY: ['harvester', 'upgrader', 'builder'],
-};
+const CONF = require('conf').SPAWN;
 
 const spawn = {
   harvester: (roleCreeps) => {
