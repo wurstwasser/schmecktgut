@@ -1,3 +1,5 @@
 .DS_STORE
 .sync
 conf.js
+new.*
+old.*
