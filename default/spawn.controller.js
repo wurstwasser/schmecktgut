@@ -12,6 +12,16 @@ bodyTypeCosts.set(Symbol.for(TOUGH), 10);
 
 const CONF = require('conf').SPAWN;
 
+function s4() {
+  return Math.floor((1 + Math.random()) * 0x10000)
+    .toString(16)
+    .substring(1);
+}
+
+function generateName(role) {
+  return role + '_creep_' + s4() + s4();
+}
+
 function createBodyForRole(role, spawn) {
   const energyCap = spawn.room.energyCapacityAvailable;
   let costs = 0;
@@ -41,7 +51,7 @@ const spawn = {
     _.forEach(Game.spawns, (spawn, spawnName) => {
       const body = createBodyForRole(roles.harvester, spawn);
       if (spawn.canCreateCreep(body) === 0) {
-        const newName = spawn.createCreep(body, undefined, {role: 'harvester', spawn: spawnName});
+        const newName = spawn.createCreep(body, generateName('harvester'), {role: 'harvester', spawn: spawnName});
         console.log('spawning new harvester: ' + newName);
       }
     });
@@ -51,7 +61,7 @@ const spawn = {
     _.forEach(Game.spawns, (spawn) => {
       const body = createBodyForRole(roles.builder, spawn);
       if (spawn.canCreateCreep(body) === 0) {
-        const newName = spawn.createCreep(body, undefined, {role: 'builder'});
+        const newName = spawn.createCreep(body, generateName('builder'), {role: 'builder'});
         console.log('spawning new builder: ' + newName);
       }
     });
@@ -61,7 +71,7 @@ const spawn = {
     _.forEach(Game.spawns, (spawn) => {
       const body = createBodyForRole(roles.upgrader, spawn);
       if (spawn.canCreateCreep(body) === 0) {
-        const newName = spawn.createCreep(body, undefined, {role: 'upgrader'});
+        const newName = spawn.createCreep(body, generateName('upgrader'), {role: 'upgrader'});
         console.log('spawning new upgrader: ' + newName);
       }
     });
