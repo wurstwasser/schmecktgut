@@ -7,6 +7,7 @@ module.exports = {
       case 'upgrade':
         if (creep.carry.energy == 0) {
           creep.memory.job = 'harvest';
+          creep.say('harvesting');
           break;
         }
 
@@ -18,6 +19,7 @@ module.exports = {
       default:
         if (creep.carry.energy === creep.carryCapacity) {
           creep.memory.job = 'upgrade';
+          creep.say('upgrading');
           break;
         }
 
@@ -26,7 +28,6 @@ module.exports = {
     }
   },
   bodies: {
-    default: [WORK,CARRY,MOVE],
     base: [WORK,CARRY,MOVE],
     extend: [WORK, WORK, CARRY, MOVE],
   }
