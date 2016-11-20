@@ -3,11 +3,23 @@ module.exports = {
     PATHFINDING: 'findClosestByRange',
   },
   SPAWN: {
+    MAX: {
+      harvester: 6,
+      builder: 7,
+      upgrader: 3,
+    },
     MIN: {
-      harvester: 3,
-      builder: 2,
-      upgrader: 4,
+      harvester: 4,
+      builder: 3,
+      upgrader: 2,
     },
     PRIORITY: ['harvester', 'upgrader', 'builder'],
+    RATIO: {
+      harvester: 2,
+      builder: 2,
+      upgrader: 1,
+    },
+    RATIO_TOTAL: 4,
+    RATIO_PRIORITY: ['harvester', 'builder', 'upgrader'],
   },
 };

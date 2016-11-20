@@ -45,48 +45,91 @@ function createBodyForRole(role, spawn) {
   return returnBody;
 }
 
-const spawn = {
-  harvester: (roleCreeps) => {
+const spawnLogic = {
+  harvester: (spawn, spawnName, roleCreeps, increasesRatio) => {
     const count = roleCreeps.length;
-    _.forEach(Game.spawns, (spawn, spawnName) => {
-      const body = createBodyForRole(roles.harvester, spawn);
-      if (spawn.canCreateCreep(body) === 0) {
-        const newName = spawn.createCreep(body, generateName('harvester'), {role: 'harvester', spawn: spawnName});
-        console.log('spawning new harvester: ' + newName);
+    const body = createBodyForRole(roles.harvester, spawn);
+    if (spawn.canCreateCreep(body) === 0) {
+      const newName = spawn.createCreep(body, generateName('harvester'), {role: 'harvester', spawn: spawnName});
+      if (increasesRatio) {
+        spawn.memory.rrStep += 1;
+        spawn.memory.ratioProgress.harvester += 1;
       }
-    });
+      console.log('spawning new harvester: ' + newName);
+    }
   },
-  builder: (roleCreeps) => {
+  builder: (spawn, spawnName, roleCreeps, increasesRatio) => {
     const count = roleCreeps.length;
-    _.forEach(Game.spawns, (spawn) => {
-      const body = createBodyForRole(roles.builder, spawn);
-      if (spawn.canCreateCreep(body) === 0) {
-        const newName = spawn.createCreep(body, generateName('builder'), {role: 'builder'});
-        console.log('spawning new builder: ' + newName);
+    const body = createBodyForRole(roles.builder, spawn);
+    if (spawn.canCreateCreep(body) === 0) {
+      const newName = spawn.createCreep(body, generateName('builder'), {role: 'builder'});
+      if (increasesRatio) {
+        spawn.memory.rrStep += 1;
+        spawn.memory.ratioProgress.builder += 1;
       }
-    });
+      console.log('spawning new builder: ' + newName);
+    }
   },
-  upgrader: (roleCreeps) => {
+  upgrader: (spawn, spawnName, roleCreeps, increasesRatio) => {
     const count = roleCreeps.length;
-    _.forEach(Game.spawns, (spawn) => {
-      const body = createBodyForRole(roles.upgrader, spawn);
-      if (spawn.canCreateCreep(body) === 0) {
-        const newName = spawn.createCreep(body, generateName('upgrader'), {role: 'upgrader'});
-        console.log('spawning new upgrader: ' + newName);
+    const body = createBodyForRole(roles.upgrader, spawn);
+    if (spawn.canCreateCreep(body) === 0) {
+      const newName = spawn.createCreep(body, generateName('upgrader'), {role: 'upgrader'});
+      if (increasesRatio) {
+        spawn.memory.rrStep += 1;
+        spawn.memory.ratioProgress.upgrader += 1;
       }
-    });
+      console.log('spawning new upgrader: ' + newName);
+    }
   },
-}
+};
 
 module.exports = {
   run: () => {
     const creeps = _.groupBy(Game.creeps, (creep) => creep.memory.role);
-    for (role of CONF.PRIORITY) {
-      const roleCreeps = creeps[role] || [];
-      if (CONF.MIN[role] > roleCreeps.length) {
-        spawn[role](roleCreeps);
-        return;
+    _.forEach(Game.spawns, (spawn, spawnName) => {
+      for (role of CONF.PRIORITY) {
+        const roleCreeps = creeps[role] || [];
+        if (CONF.MIN[role] > roleCreeps.length) {
+          spawnLogic[role](spawn, spawnName, roleCreeps, false);
+          return;
+        }
       }
-    }
+
+      const maxRoles = CONF.RATIO_PRIORITY.length;
+      let ratioIndex = 0;
+      let hasBuild = false;
+      let doneWithoutBuild = new Set();
+
+      if (spawn.memory.rrStep >= CONF.RATIO_LENGTH || spawn.memory.rrStep === undefined) {
+        spawn.memory.ratioProgress = {};
+        CONF.RATIO_PRIORITY.forEach((role) => {
+          spawn.memory.ratioProgress[role] = 0;
+        });
+        spawn.memory.rrStep = 0;
+      }
+
+      do {
+        ratioRole = CONF.RATIO_PRIORITY[ratioIndex];
+        if (creeps[ratioRole].length >= CONF.MAX[ratioRole]) {
+          console.log(ratioRole, creeps[ratioRole].length, CONF.MAX[ratioRole]);
+          doneWithoutBuild.add(ratioRole);
+        }
+
+        if (spawn.memory.ratioProgress[ratioRole] < CONF.RATIO[ratioRole]) {
+          const roleCreeps = creeps[role] || [];
+          spawnLogic[role](spawn, spawnName, roleCreeps, true);
+          hasBuild = true;
+        } else {
+          doneWithoutBuild.add(ratioRole);
+        }
+
+        if (doneWithoutBuild.size >= maxRoles) {
+          hasBuild = true;
+        }
+
+        ratioIndex = (ratioIndex + 1) % maxRoles;
+      } while (!hasBuild);
+    });
   }
 }
