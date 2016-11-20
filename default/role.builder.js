@@ -8,11 +8,12 @@ const JOBS = {
 }
 const REPAIR_TRESHOLD = 0.75;
 const EMERGENCY_REPAIR_TRESHOLD = 0.20;
+const EMERGENCY_REPAIR_UPPER_TRESHOLD_ABSOLUTE = 10000;
 const EMERGENCY_REPAIR_UPPER_TRESHOLD = 0.4;
 const BUILD_STRUCTURES = [
   [STRUCTURE_EXTENSION, STRUCTURE_SPAWN],
   [STRUCTURE_WALL, STRUCTURE_TOWER],
-  [STRUCTURE_ROAD], 
+  [STRUCTURE_ROAD],
   [STRUCTURE_RAMPART, STRUCTURE_KEEPER_LAIR, STRUCTURE_PORTAL,
     STRUCTURE_CONTROLLER, STRUCTURE_LINK, STRUCTURE_STORAGE,
     STRUCTURE_OBSERVER, STRUCTURE_POWER_BANK, STRUCTURE_POWER_SPAWN,
@@ -30,7 +31,7 @@ function getJob(creep){
   }
   // EMERGENCY_REPAIR
   targets = creep.room.find(FIND_STRUCTURES, {
-    filter: object => object.hits < (object.hitsMax * EMERGENCY_REPAIR_TRESHOLD)
+    filter: object => object.hits < (object.hitsMax * EMERGENCY_REPAIR_TRESHOLD && object.hits < EMERGENCY_REPAIR_UPPER_TRESHOLD_ABSOLUTE)
   })
   if (targets.length > 0) {
     target = {
@@ -112,18 +113,20 @@ module.exports = {
         }
         break;
       case JOBS.EMERGENCY_REPAIR:
-        if (creep.repair(target) === ERR_NOT_IN_RANGE || creep.carry.energy === 0) {
+        if (creep.repair(target) === ERR_NOT_IN_RANGE) {
           creep.moveTo(target);
         }
-        if(target.hits === target.hitsMax * EMERGENCY_REPAIR_UPPER_TRESHOLD){
+        if(target.hits === target.hitsMax * EMERGENCY_REPAIR_UPPER_TRESHOLD || 
+          target.hits > EMERGENCY_REPAIR_UPPER_TRESHOLD_ABSOLUTE || 
+          creep.carry.energy === 0){
           creep.memory.busy = false;
         }
         break;
       case JOBS.REPAIR:
-        if (creep.repair(target) === ERR_NOT_IN_RANGE || creep.carry.energy === 0) {
+        if (creep.repair(target) === ERR_NOT_IN_RANGE) {
           creep.moveTo(target);
         }
-        if(target.hits === target.hitsMax){
+        if(target.hits === target.hitsMax || creep.carry.energy === 0){
           creep.memory.busy = false;
         }
         break;
