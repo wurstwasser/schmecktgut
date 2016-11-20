@@ -4,7 +4,7 @@ const CONF = {
   MIN: {
     harvester: 3,
     builder: 2,
-    upgrader: 2,
+    upgrader: 3,
   },
   PRIORITY: ['harvester', 'upgrader', 'builder'],
 };
