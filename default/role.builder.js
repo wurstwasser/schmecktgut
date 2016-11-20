@@ -1,4 +1,5 @@
 const collectEnergy = require('job.collectEnergy');
+const CONF = require('conf').GENERAL;
 
 module.exports = {
   run: function(creep) {
@@ -13,7 +14,7 @@ module.exports = {
     }
 
     if (creep.memory.building) {
-      var target = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+      var target = creep.pos[CONF.PATHFINDING](FIND_CONSTRUCTION_SITES);
       if (target) {
         if (creep.build(target) == ERR_NOT_IN_RANGE) {
           creep.moveTo(target);
@@ -24,17 +25,8 @@ module.exports = {
     }
   },
   bodies: {
-    default: [
-      WORK, CARRY, MOVE,
-    ],
-    big: [
-      WORK,
-      WORK,
-      WORK,
-      WORK,
-      CARRY,
-      MOVE,
-      MOVE,
-    ]
+    default: [WORK,CARRY,MOVE],
+    base: [WORK,CARRY,MOVE],
+    extend: [WORK, WORK, CARRY, MOVE],
   }
 }

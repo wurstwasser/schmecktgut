@@ -18,6 +18,7 @@ module.exports = {
   },
   bodies: {
     default: [WORK,CARRY,MOVE],
-    big: [WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE],
+    base: [WORK,CARRY,MOVE],
+    extend: [WORK, WORK, CARRY, MOVE],
   }
 };

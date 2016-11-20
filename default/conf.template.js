@@ -1,4 +1,7 @@
 module.exports = {
+  GENERAL: {
+    PATHFINDING: 'findClosestByRange',
+  },
   SPAWN: {
     MIN: {
       harvester: 3,
