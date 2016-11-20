@@ -1,18 +1,40 @@
+const collectEnergy = require('job.collectEnergy');
+
 module.exports = {
   run: function(creep) {
-    if (creep.energy == 0) {
-      creep.moveTo(Game.spawns.Spawn1);
-      Game.spawns.Spawn1.transferEnergy(creep);
-    } else {
-      var targets = creep.room.find(Game.CONSTRUCTION_SITES);
+
+    if (creep.memory.building && creep.carry.energy == 0) {
+      creep.memory.building = false;
+      creep.say('harvesting');
+    }
+    if (!creep.memory.building && creep.carry.energy == creep.carryCapacity) {
+      creep.memory.building = true;
+      creep.say('building');
+    }
+
+    if (creep.memory.building) {
+      var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
       if (targets.length) {
-        creep.moveTo(targets[0]);
-        creep.build(targets[0]);
+        if (creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(targets[0]);
+        }
       }
+    } else {
+      collectEnergy(creep);
     }
   },
   bodies: {
-    default: [WORK,CARRY,MOVE],
-    big: [WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE],
-  },
+    default: [
+      WORK, CARRY, MOVE,
+    ],
+    big: [
+      WORK,
+      WORK,
+      WORK,
+      WORK,
+      CARRY,
+      MOVE,
+      MOVE,
+    ]
+  }
 }
