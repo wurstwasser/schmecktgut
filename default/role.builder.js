@@ -38,7 +38,7 @@ function getJob(creep){
       hits: 1,
       hitsMax: 1
     }
-    tagets.forEach(object => target = object.hits/object.hitsMax < target.hits/target.hitsMax ? object : target);
+    targets.forEach(object => target = object.hits/object.hitsMax < target.hits/target.hitsMax ? object : target);
     creep.memory.job = JOBS.EMERGENCY_REPAIR;
     creep.memory.target = target.id;
     creep.say('emergency repairing');
@@ -79,7 +79,7 @@ function getJob(creep){
       hits: 1,
       hitsMax: 1
     }
-    tagets.forEach(object => target = object.hits/object.hitsMax < target.hits/target.hitsMax ? object : target);
+    targets.forEach(object => target = object.hits/object.hitsMax < target.hits/target.hitsMax ? object : target);
     creep.memory.job = JOBS.REPAIR;
     creep.memory.target = target.id;
     creep.say('repairing');
