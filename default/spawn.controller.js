@@ -12,8 +12,8 @@ const CONF = {
 const spawn = {
   harvester: (roleCreeps) => {
     const count = roleCreeps.length;
-    _.forEach(Game.spawns, (spawn) => {
-      const newName = spawn.createCreep(roles.harvester.bodies.default, undefined, {role: 'harvester'});
+    _.forEach(Game.spawns, (spawn, spawnName) => {
+      const newName = spawn.createCreep(roles.harvester.bodies.default, undefined, {role: 'harvester', spawn: spawnName});
       console.log('spawning new harvester: ' + newName);
     });
   },
