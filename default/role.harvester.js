@@ -12,7 +12,7 @@ module.exports = {
       let target;
       let targets = creep.room.find(FIND_STRUCTURES, {
         filter: (structure) => {
-          let result = fals^e;
+          let result = false;
           _.flatten(SUPPLIED_STRUCTURES).forEach((struct) => result = result || structure.structureType === struct);
           return result && structure.energy < structure.energyCapacity;
         }
@@ -29,7 +29,8 @@ module.exports = {
         }
       });
 
-      for (targetGroup of targets) {
+      for (const targetGroupKey in targets) {
+        const targetGroup = targets[targetGroupKey];
         if (targetGroup.length === 0) continue;
         else {
           target = creep.pos.findClosestByPath(targetGroup);
