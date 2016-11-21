@@ -128,7 +128,6 @@ module.exports = {
         }
 
         if (doneWithoutBuild.size >= maxRoles) {
-          console.log('build nothing this tick');
           hasBuild = true;
         }
 
