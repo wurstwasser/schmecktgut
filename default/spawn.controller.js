@@ -91,17 +91,19 @@ module.exports = {
       for (role of CONF.PRIORITY) {
         const roleCreeps = creeps[role] || [];
         if (CONF.MIN[role] > roleCreeps.length) {
+          console.log('plan to build ' + role + ' creep because of MIN requirement');
           spawnLogic[role](spawn, spawnName, roleCreeps, false);
           return;
         }
       }
 
       const maxRoles = CONF.RATIO_PRIORITY.length;
-      let ratioIndex = 0;
+      let ratioIndex = spawn.memory.rrStep % maxRoles;
       let hasBuild = false;
       let doneWithoutBuild = new Set();
 
-      if (spawn.memory.rrStep >= CONF.RATIO_LENGTH || spawn.memory.rrStep === undefined) {
+      if (spawn.memory.rrStep >= CONF.RATIO_TOTAL || spawn.memory.rrStep === undefined) {
+        console.log('round robin cycle reached');
         spawn.memory.ratioProgress = {};
         CONF.RATIO_PRIORITY.forEach((role) => {
           spawn.memory.ratioProgress[role] = 0;
@@ -112,19 +114,18 @@ module.exports = {
       do {
         ratioRole = CONF.RATIO_PRIORITY[ratioIndex];
         if (creeps[ratioRole].length >= CONF.MAX[ratioRole]) {
-          console.log(ratioRole, creeps[ratioRole].length, CONF.MAX[ratioRole]);
           doneWithoutBuild.add(ratioRole);
-        }
-
-        if (spawn.memory.ratioProgress[ratioRole] < CONF.RATIO[ratioRole]) {
-          const roleCreeps = creeps[role] || [];
-          spawnLogic[role](spawn, spawnName, roleCreeps, true);
+        } else if (spawn.memory.ratioProgress[ratioRole] < CONF.RATIO[ratioRole]) {
+          console.log('plan to build', ratioRole, 'creep because of RATIO requirement');
+          const roleCreeps = creeps[ratioRole] || [];
+          spawnLogic[ratioRole](spawn, spawnName, roleCreeps, true);
           hasBuild = true;
         } else {
           doneWithoutBuild.add(ratioRole);
         }
 
         if (doneWithoutBuild.size >= maxRoles) {
+          console.log('build nothing this tick');
           hasBuild = true;
         }
 
