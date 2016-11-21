@@ -31,7 +31,8 @@ function getJob(creep){
   }
   // EMERGENCY_REPAIR
   targets = creep.room.find(FIND_STRUCTURES, {
-    filter: object => object.hits < (object.hitsMax * EMERGENCY_REPAIR_TRESHOLD && object.hits < EMERGENCY_REPAIR_UPPER_TRESHOLD_ABSOLUTE)
+    filter: object => object.hits < object.hitsMax * EMERGENCY_REPAIR_TRESHOLD &&
+      object.hits < EMERGENCY_REPAIR_UPPER_TRESHOLD_ABSOLUTE
   })
   if (targets.length > 0) {
     target = {
@@ -116,7 +117,7 @@ module.exports = {
         if (creep.repair(target) === ERR_NOT_IN_RANGE) {
           creep.moveTo(target);
         }
-        if(target.hits === target.hitsMax * EMERGENCY_REPAIR_UPPER_TRESHOLD || 
+        if(target.hits > target.hitsMax * EMERGENCY_REPAIR_UPPER_TRESHOLD || 
           target.hits > EMERGENCY_REPAIR_UPPER_TRESHOLD_ABSOLUTE || 
           creep.carry.energy === 0){
           creep.memory.busy = false;
