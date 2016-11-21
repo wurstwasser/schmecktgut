@@ -14,7 +14,7 @@ module.exports.loop = () => {
     console.log('total:', total);
     console.log('-----------');
     _.forEach(Game.spawns, (spawn, spawnName) => {
-      console.log(spawnName, 'plans to spawn', spawn.memory.nextSpawnRole, 'next creep because of', spawn.memory.nextSpawnCause, 'requirement');
+      console.log(spawnName, 'plans to spawn', '"' + spawn.memory.nextSpawnRole + '"', 'creep next because of', spawn.memory.nextSpawnCause, 'requirement');
     });
     console.log('-----------');
   }
