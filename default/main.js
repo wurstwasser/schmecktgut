@@ -1,6 +1,7 @@
 const controller = {
   spawn: require('spawn.controller'),
   creeps: require('creeps.controller'),
+  structures: require('structures.controller'),
 }
 
 module.exports.loop = () => {
@@ -21,4 +22,5 @@ module.exports.loop = () => {
 
   controller.spawn.run();
   controller.creeps.run();
+  controller.structures.run();
 }
