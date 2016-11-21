@@ -12,6 +12,11 @@ module.exports.loop = () => {
       total += roleCreeps.length;
     });
     console.log('total:', total);
+    console.log('-----------');
+    _.forEach(Game.spawns, (spawn, spawnName) => {
+      console.log(spawnName, 'plans to spawn', spawn.memory.nextSpawnRole, 'next creep because of', spawn.memory.nextSpawnCause, 'requirement');
+    });
+    console.log('-----------');
   }
 
   controller.spawn.run();

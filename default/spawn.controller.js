@@ -91,7 +91,8 @@ module.exports = {
       for (role of CONF.PRIORITY) {
         const roleCreeps = creeps[role] || [];
         if (CONF.MIN[role] > roleCreeps.length) {
-          console.log('plan to build ' + role + ' creep because of MIN requirement');
+          spawn.memory.nextSpawnRole = role;
+          spawn.memory.nextSpawnCause = 'MIN';
           spawnLogic[role](spawn, spawnName, roleCreeps, false);
           return;
         }
@@ -116,7 +117,9 @@ module.exports = {
         if (creeps[ratioRole].length >= CONF.MAX[ratioRole]) {
           doneWithoutBuild.add(ratioRole);
         } else if (spawn.memory.ratioProgress[ratioRole] < CONF.RATIO[ratioRole]) {
-          console.log('plan to build', ratioRole, 'creep because of RATIO requirement');
+          spawn.memory.nextSpawnRole = ratioRole;
+          spawn.memory.nextSpawnCause = 'RATIO';
+
           const roleCreeps = creeps[ratioRole] || [];
           spawnLogic[ratioRole](spawn, spawnName, roleCreeps, true);
           hasBuild = true;
