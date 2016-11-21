@@ -116,6 +116,8 @@ module.exports = {
         ratioRole = CONF.RATIO_PRIORITY[ratioIndex];
         if (creeps[ratioRole].length >= CONF.MAX[ratioRole]) {
           doneWithoutBuild.add(ratioRole);
+          spawn.memory.rrStep += 1;
+          spawn.memory.ratioProgress[ratioRole] += 1;
         } else if (spawn.memory.ratioProgress[ratioRole] < CONF.RATIO[ratioRole]) {
           spawn.memory.nextSpawnRole = ratioRole;
           spawn.memory.nextSpawnCause = 'RATIO';
