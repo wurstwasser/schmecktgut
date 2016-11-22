@@ -79,6 +79,7 @@ module.exports = {
     if(creep.memory.target){
       target = Game.getObjectById(creep.memory.target);
     }
+
     switch (creep.memory.job) {
       case JOBS.HARVEST:
         collectEnergy(creep);
