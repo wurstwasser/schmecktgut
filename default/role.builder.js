@@ -82,18 +82,21 @@ function getJob(creep){
       hitsMax: 1
     }
     targets.forEach(object => target = object.hits/object.hitsMax < target.hits/target.hitsMax ? object : target);
-    creep.memory.job = JOBS.REPAIR;
-    creep.memory.target = target.id;
+    creep.memory.job = target && JOBS.REPAIR;
+    creep.memory.target = target && target.id;
     creep.say('repairing');
     return;
   }
+  // TODO default job: GO WHERE YOU ARE NOT IN THE WAY
+  creep.say('pausing');
+  return;
 }
 
 module.exports = {
   run: function(creep) {
     let target;
     if(!creep.memory.busy){
-      creep.memory.busy = true;
+      creep.memory.busy = !!creep.memory.target || creep.memory.job === JOBS.HARVEST;
       getJob(creep);
     }
     if(creep.memory.target){

@@ -19,22 +19,7 @@ function getJob(creep){
     creep.say('harvesting');
     return;
   }
-  // EMERGENCY_REPAIR
-  targets = creep.room.find(FIND_STRUCTURES, {
-    filter: object => object.hits < object.hitsMax * EMERGENCY_REPAIR_TRESHOLD &&
-      object.hits < EMERGENCY_REPAIR_TRESHOLD_ABSOLUTE
-  })
-  if (targets.length > 0) {
-    target = {
-      hits: 1,
-      hitsMax: 1
-    }
-    targets.forEach(object => target = object.hits/object.hitsMax < target.hits/target.hitsMax ? object : target);
-    creep.memory.job = JOBS.EMERGENCY_REPAIR;
-    creep.memory.target = target.id;
-    creep.say('emergency repairing');
-    return;
-  }
+
   // DELIVERING
   targets = creep.room.find(FIND_STRUCTURES, {
     filter: (structure) => {
@@ -62,9 +47,25 @@ function getJob(creep){
         break;
       };
     }
-    creep.memory.job = JOBS.DELIVERING;
-    creep.memory.target = target.id;
+    creep.memory.target = target && target.id;
+    creep.memory.job = target && JOBS.DELIVERING;
     creep.say('delivering');
+    return;
+  }
+  // EMERGENCY_REPAIR
+  targets = creep.room.find(FIND_STRUCTURES, {
+    filter: object => object.hits < object.hitsMax * EMERGENCY_REPAIR_TRESHOLD &&
+      object.hits < EMERGENCY_REPAIR_TRESHOLD_ABSOLUTE
+  })
+  if (targets.length > 0) {
+    target = {
+      hits: 1,
+      hitsMax: 1
+    }
+    targets.forEach(object => target = object.hits/object.hitsMax < target.hits/target.hitsMax ? object : target);
+    creep.memory.target = target && target.id;
+    creep.memory.job = target && JOBS.EMERGENCY_REPAIR;
+    creep.say('emergency repairing');
     return;
   }
 }
@@ -73,7 +74,7 @@ module.exports = {
   run: function(creep) {
     let target;
     if(!creep.memory.busy){
-      creep.memory.busy = true;
+      creep.memory.busy = !!creep.memory.target || creep.memory.job === JOBS.HARVEST;
       getJob(creep);
     }
     if(creep.memory.target){
