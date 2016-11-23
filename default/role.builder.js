@@ -67,8 +67,8 @@ function getJob(creep){
         break;
       };
     }
-    creep.memory.job = JOBS.BUILDING;
-    creep.memory.target = target.id;
+    creep.memory.job = (target && JOBS.BUILDING) || JOBS.HARVEST;
+    creep.memory.target = target && target.id;
     creep.say('building');
     return;
   }
@@ -132,6 +132,8 @@ module.exports = {
           creep.memory.busy = false;
         }
         break;
+      default:
+        creep.memory.busy = false;
     }
   },
   bodies: {
