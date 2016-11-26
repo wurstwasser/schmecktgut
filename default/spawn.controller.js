@@ -23,7 +23,10 @@ function generateName(role) {
 }
 
 function createBodyForRole(role, spawn) {
-  const energyCap = spawn.room.energyCapacityAvailable;
+  let multiplier = _.groupBy(Game.creeps, (creep) => creep.memory.role).harvester.length/CONF.MIN.harvester;
+  multiplier = multiplier > CONF.ENERGY_CAP_RATIO ? CONF.ENERGY_CAP_RATIO : multiplier;
+  let energyCap = spawn.room.energyCapacityAvailable * multiplier;
+  energyCap = energyCap < 300 ? 300 : energyCap;
   let costs = 0;
 
   const returnBody = _.clone(role.bodies.base);

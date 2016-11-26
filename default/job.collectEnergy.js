@@ -1,6 +1,16 @@
 const CONF = require('conf').GENERAL;
 
 module.exports = (creep) => {
+  // let sourcesInRoom = creep.room.find(FIND_DROPPED_ENERGY);
+  // console.log(sourcesInRoom);
+  const energy = creep.pos.findInRange(
+    FIND_DROPPED_ENERGY,
+    1
+  );
+  if (energy.length) {
+    creep.pickup(energy[0]);
+    return;
+  }
   const sourcesInRoom = creep.room.find(FIND_SOURCES);
   let foundSource = false;
   do {

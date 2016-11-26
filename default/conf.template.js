@@ -3,6 +3,7 @@ module.exports = {
     PATHFINDING: 'findClosestByRange',
   },
   SPAWN: {
+    ENERGY_CAP_RATIO: 0.8,
     MAX: {
       harvester: 6,
       builder: 7,
